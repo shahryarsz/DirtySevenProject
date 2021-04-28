@@ -8,6 +8,7 @@ public class Game {
 
     private ArrayList<Player> players;
     private ArrayList<Card> cards;
+    private Storage storage;
 
     public Game(ArrayList<Player> players1){
         //adding players
@@ -63,7 +64,44 @@ public class Game {
                 cards.remove(x);
             }
         }
+        //adding other carts to storage
+        storage = new Storage();
+        storage.storeCards.addAll(cards);
     }
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+
+    public void colorPrint(String color , String text){
+        if (color.equals("black"))
+            System.out.println(ANSI_BLACK + text + ANSI_RESET);
+        else if (color.equals("blue"))
+            System.out.println(ANSI_BLUE + text + ANSI_RESET);
+        else if (color.equals("red"))
+            System.out.println(ANSI_RED + text + ANSI_RESET);
+        else
+            System.out.println(ANSI_GREEN + text + ANSI_RESET);
+    }
+
+//    public void printPlayerCards(){
+//        for (Player player : players){
+//            System.out.println(player.name+":\n");
+//            for (Card card : player.playerCards){
+//                colorPrint(card.color, card.value);
+//            }
+//        }
+//    }
+//    public void printStorageCart(){
+//        for (Card card : storage.storeCards){
+//            colorPrint(card.color, card.value);
+//        }
+//    }
 
 
 
