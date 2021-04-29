@@ -6,9 +6,15 @@ public class Bot extends Player{
         super(name);
     }
 
-    public Card botChoose(){
-        //black box
+    public Card botChoose(Card mainCard){
+        for (Card card : playerCards){
+            if (card.value.equals(mainCard.value) || card.color.equals(mainCard.color)){
+                return card;
+            }
+        }
         return null;
     }
+
+
 
 }

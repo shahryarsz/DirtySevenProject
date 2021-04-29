@@ -9,4 +9,6 @@ public abstract class Card {
         this.value = value;
         this.color = color;
     }
+
+
 }

@@ -9,4 +9,8 @@ public class Storage {
     public Storage(){
         storeCards = new ArrayList<>();
     }
+
+    public void addStorage(Card card){
+        storeCards.add(card);
+    }
 }

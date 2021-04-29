@@ -10,4 +10,5 @@ public class NormalCard extends Card {
         else
             super.prize = Integer.parseInt(value);
     }
+
 }
