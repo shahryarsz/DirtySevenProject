@@ -1,16 +1,20 @@
 package com.company;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Game {
 
     private ArrayList<Player> players;
     private ArrayList<Card> cards;
     private Storage storage;
+    private boolean clockwise;
+    private boolean winner;
 
     public Game(ArrayList<Player> players1){
+        winner = true;
+        clockwise = true;
         //adding players
         players = new ArrayList<>();
         players.addAll(players1);
@@ -80,21 +84,26 @@ public class Game {
 
     public void colorPrint(String color , String text){
         if (color.equals("black"))
-            System.out.println(ANSI_BLACK + text + ANSI_RESET);
+            System.out.print(ANSI_BLACK + text + ANSI_RESET);
         else if (color.equals("blue"))
-            System.out.println(ANSI_BLUE + text + ANSI_RESET);
+            System.out.print(ANSI_BLUE + text + ANSI_RESET);
         else if (color.equals("red"))
-            System.out.println(ANSI_RED + text + ANSI_RESET);
+            System.out.print(ANSI_RED + text + ANSI_RESET);
         else
-            System.out.println(ANSI_GREEN + text + ANSI_RESET);
+            System.out.print(ANSI_GREEN + text + ANSI_RESET);
     }
 
+    public boolean isWinner(){
+        return winner;
+    }
+//printing things for test!
 //    public void printPlayerCards(){
 //        for (Player player : players){
-//            System.out.println(player.name+":\n");
+//            System.out.println(player.name+":");
 //            for (Card card : player.playerCards){
 //                colorPrint(card.color, card.value);
 //            }
+//            System.out.println();
 //        }
 //    }
 //    public void printStorageCart(){
@@ -103,6 +112,124 @@ public class Game {
 //        }
 //    }
 
+//    public void showMainCard(Card card){
+//        System.out.println("\n\n\n");
+//        colorPrint(card.color, "        ┍━━━━━━━━━┑\n"+
+//                                    "        │ "+card.value+"       │\n"+
+//                                    "        │         │\n"+
+//                                    "        │         │\n"+
+//                                    "        │       "+card.value+" │\n"+
+//                                    "        ┕━━━━━━━━━┙\n");
+//    }
+
+    public void showMainCard(Card card){
+        System.out.print("main cart:");
+        colorPrint(card.color, card.value);
+        System.out.println();
+    }
+
+    public boolean checkPlay(Card playCard , Card mainCard){
+        if (playCard.value.equals(mainCard.value) || playCard.color.equals(mainCard.color))
+            return false;
+        else
+            return true;
+    }
+
+
+    public void gameLoop(){
+        Random random = new Random();
+
+        //choosing first main cart
+        Card mainCard = storage.storeCards.get(0);
+        storage.storeCards.remove(0);
+        Human myPlayer = (Human) players.get(0);
+        Scanner scanner = new Scanner(System.in);
+
+        while (winner) {
+            //my player turn
+            while (true) {
+                System.out.println("\n\n" + myPlayer.name + "'s turn:\n\n");
+                showMainCard(mainCard);
+                System.out.println("\nyour cards:");
+                myPlayer.showCards();
+                if (myPlayer.cantPlay(mainCard)) {
+                    System.out.print("\nPress enter to grab a card from storage.");
+                    scanner.nextLine();
+                    myPlayer.grabStorage(storage);
+                    if (!(myPlayer.cantPlay(mainCard))) {                             //player can play
+                        continue;
+                    } else {                                                         //can't play anymore
+                        System.out.println("\nnow your cards are:\n");
+                        myPlayer.showCards();
+                        break;
+                    }
+                } else {
+                    System.out.print("\nplease choose a card:");
+                    int choice = scanner.nextInt();
+                    scanner.nextLine();
+                    if (checkPlay(myPlayer.chooseCard(choice), mainCard)) {
+                        System.out.println("\nWrong input\n");
+                    } else {
+                        storage.addStorage(mainCard);
+                        mainCard = myPlayer.chooseCard(choice);
+                        myPlayer.removeCard(mainCard);
+                        if (myPlayer.playerCards.isEmpty()){
+                            System.out.println("\n"+myPlayer.name +" wins!!");
+                            winner = false;
+                            return;
+                        }
+                        System.out.println("\nnow your cards are:\n");
+                        myPlayer.showCards();
+                        System.out.print("\nPress enter to continue");
+                        scanner.nextLine();
+                        break;
+                    }
+                }
+            }
+            //bot turn
+            while (winner) {
+                for (Player player : players) {
+                    if (player instanceof Bot) {
+
+                        System.out.println("\n\n" + player.name + "'s turn:\n\n");
+                        showMainCard(mainCard);
+                        player.showCards();
+                        System.out.print("\nPress enter to see bot choice!");
+                        scanner.nextLine();
+                        Card botCard = ((Bot) player).botChoose(mainCard);
+                        if (botCard == null) {
+                            System.out.print("\nBot should grab a card from storage!Press enter to continue!");
+                            scanner.nextLine();
+                            player.grabStorage(storage);
+                            if (!(player.cantPlay(mainCard))) {                             //can play
+                                continue;
+                            } else {
+                                player.showCards();                                         //cant play
+                            }
+                        } else {
+                            storage.addStorage(mainCard);
+                            mainCard = botCard;
+                            player.removeCard(mainCard);
+                            if (player.playerCards.isEmpty()){
+                                System.out.println("\n"+player.name +" wins!!");
+                                winner = false;
+                                return;
+                            }
+                            showMainCard(mainCard);
+                            System.out.print("\nPress enter to continue");
+                            scanner.nextLine();
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+
+
+
+
+    }
 
 
 
