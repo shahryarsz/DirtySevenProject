@@ -16,13 +16,13 @@ public class BossCard extends SpecialCard{
                 if (player.isPlaying){
                     if (player instanceof Human){
                         Scanner scanner = new Scanner(System.in);
-                        System.out.print("\nchoose next main card color:");
+                        System.out.print(colorString("cyan" , "\nchoose next main card color:"));
                         String color = scanner.nextLine();
                         if (color.equals("red") || color.equals("blue") || color.equals("black") || color.equals("green")){
                             game.setMainColor(color);
                             return;
                         } else {
-                            System.out.println("\nyou should choose between : green , blue , black and red!\n");
+                            System.out.println(colorString("red" , "\nyou should choose between : green , blue , black and red!\n"));
                         }
                     }else {
                         Random random = new Random();
@@ -42,7 +42,7 @@ public class BossCard extends SpecialCard{
                                 color1 = "blue";
                                 break;
                         }
-                        System.out.println("\nBot choose "+ color1 +" as next color\n");
+                        System.out.println(colorString("purple" , "\nyou should choose between : green , blue , black and red!\n"));
                         game.setMainColor(color1);
                         return;
                     }

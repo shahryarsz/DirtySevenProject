@@ -8,12 +8,14 @@ public abstract class Player {
     protected String name;
     protected boolean canPlay;
     protected boolean isPlaying;
+    protected boolean hasPunish;
 
     public Player(String name) {
         this.name = name;
         playerCards = new ArrayList<>();
         canPlay=true;
         isPlaying=false;
+        hasPunish=false;
     }
 
     public abstract void act(Game game);
@@ -35,8 +37,16 @@ public abstract class Player {
             return ANSI_BLUE + text + ANSI_RESET;
         else if (color.equals("red"))
             return ANSI_RED + text + ANSI_RESET;
-        else
+        else if (color.equals("green"))
             return ANSI_GREEN + text + ANSI_RESET;
+        else if (color.equals("yellow"))
+            return ANSI_YELLOW + text + ANSI_RESET;
+        else if (color.equals("cyan"))
+            return ANSI_CYAN + text + ANSI_RESET;
+        else if (color.equals("purple"))
+            return ANSI_PURPLE + text + ANSI_RESET;
+        else
+            return ANSI_WHITE + text + ANSI_RESET;
     }
 
     public Card getCard(int index){
@@ -63,28 +73,27 @@ public abstract class Player {
         return null;
     }
 
-    public void showCards(){
-//        if (this instanceof Human) {
-            int i = 1;
-            for (Card card : playerCards) {
-                System.out.println(i + ":" + colorString(card.color, card.value));
-                i++;
-            }
-//        }else {
-//            System.out.println(name +" has "+ playerCards.size()+" cards");
-//        }
-    }
+
+
 
     public boolean cantPlay(Card mainCard , String mainColor){
-        boolean checkBoss=false;
-        for (Card card : this.playerCards){
-            if (card instanceof BossCard){
-                checkBoss = true;
+        if (!hasPunish) {
+            boolean checkBoss = false;
+            for (Card card : this.playerCards) {
+                if (card instanceof BossCard) {
+                    checkBoss = true;
+                }
             }
-        }
-        for (Card card : playerCards){
-            if (card.value.equals(mainCard.value) || card.color.equals(mainColor) || checkBoss)
-                return false;
+            for (Card card : playerCards) {
+                if (card.value.equals(mainCard.value) || card.color.equals(mainColor) || checkBoss)
+                    return false;
+            }
+        }else {
+            for (Card card : this.playerCards){
+                if (card instanceof SevenPunishCard){
+                    return false;
+                }
+            }
         }
         return true;
     }
@@ -104,55 +113,65 @@ public abstract class Player {
         return score;
     }
 
-
-
-
-
-
-//    public void showCards(){
-//        int i = 1;
-//        String[] carts;
-//        for (Card card : playerCards){
-//            if (i==playerCards.size()){
-//                carts = new String[]{ colorString(card.color, "        ┍━━━━━━━━━┑"+
-//                        "        │ "+card.value+"       │\n"+
-//                        "        │         │\n"+
-//                        "        │         │\n"+
-//                        "        │       "+card.value+" │\n"+
-//                        "        ┕━━━━━━━━━┙")
-//                };
-//            }else {
-//                carts = new String[]{ colorString(card.color, "        ┍━━━━━━━\n" +
-//                        "        │ " + card.value + "     \n" +
-//                        "        │       \n" +
-//                        "        │       \n" +
-//                        "        │       \n" +
-//                        "        ┕━━━━━━━")
-//                };
-//            }
-//            i++;
-//        }
-//    }
-//    public void show(){
-//        String[] cartsView = new String[playerCards.size()];
-//        for (int i = 0 ; i<playerCards.size() ;i++){
-//            if (i==playerCards.size()){
-//                cartsView[i] =  colorString(playerCards.get(i).color, "        ┍━━━━━━━━━┑"+
-//                        "        │ "+playerCards.get(i).value+"       │\n"+
-//                        "        │         │\n"+
-//                        "        │         │\n"+
-//                        "        │       "+playerCards.get(i).value+" │\n"+
-//                        "        ┕━━━━━━━━━┙\n");
-//            }else {
-//                cartsView[i] =  colorString(playerCards.get(i).color, "        ┍━━━━━━━\n" +
-//                        "        │ " + playerCards.get(i).value + "     \n" +
-//                        "        │       \n" +
-//                        "        │       \n" +
-//                        "        │       \n" +
-//                        "        ┕━━━━━━━\n");
-//            }
-//        }
-//        System.out.print(cartsView[0]+cartsView[1]);
-//    }
+    public void showCards(){
+        if (this instanceof Bot){
+            System.out.println(colorString("yellow" , this.name+" has "+this.playerCards.size()+" cards"));
+            return;
+        }
+        int index=0;
+        for (Card card : playerCards){
+            if (index==playerCards.size()-1){
+                System.out.print(colorString(card.color , "┍━━━━━┑"));
+            }else {
+                System.out.print(colorString(card.color , "┍━━━━━"));
+            }
+            index++;
+        }
+        System.out.println();
+        index=0;
+        for (Card card : playerCards){
+            if (index==playerCards.size()-1){
+                System.out.print(colorString(card.color ,"|     |" ));
+            }else {
+                System.out.print(colorString(card.color, "|     "));
+            }
+            index++;
+        }
+        System.out.println();
+        index=0;
+        for (Card card : playerCards){
+            if (index==playerCards.size()-1){
+                System.out.print(colorString(card.color , card.value.length()==2?"| "+card.value +"  |":"| "+card.value+"   |"));
+            }else {
+                System.out.print(colorString(card.color , card.value.length()==2?"| "+card.value +"  ":"| "+card.value+"   "));
+            }
+            index++;
+        }
+        System.out.println();
+        index=0;
+        for (Card card : playerCards){
+            if (index==playerCards.size()-1){
+                System.out.print(colorString(card.color ,"|     |" ));
+            }else {
+                System.out.print(colorString(card.color, "|     "));
+            }
+            index++;
+        }
+        System.out.println();
+        index=0;
+        for (Card card : playerCards){
+            if (index==playerCards.size()-1){
+                System.out.print(colorString(card.color , "┕━━━━━┙"));
+            }else {
+                System.out.print(colorString(card.color , "┕━━━━━"));
+            }
+            index++;
+        }
+        System.out.println();
+        index=1;
+        for (int i=1;i<=playerCards.size();i++){
+            System.out.print(colorString("yellow" , "   "+i+"  "));
+        }
+    }
 
 }

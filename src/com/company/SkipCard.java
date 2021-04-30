@@ -7,10 +7,18 @@ public class SkipCard extends SpecialCard {
 
     @Override
     public void act(Game game) {
+        int index=0;
         for (Player player : game.getPlayers()){
             if (player.isPlaying){
-                game.getNextPlayer(player).canPlay=false;
+                if (index==game.getPlayers().size()-1) {
+                    index = 0;
+                }else {
+                    index++;
+                }
+                game.getPlayers().get(index).canPlay=false;
+                return;
             }
+            index++;
         }
     }
 }
