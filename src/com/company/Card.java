@@ -10,5 +10,8 @@ public abstract class Card {
         this.color = color;
     }
 
+    public abstract void act(Game game);
+
+
 
 }

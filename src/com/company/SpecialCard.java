@@ -1,6 +1,6 @@
 package com.company;
 
-public class SpecialCard extends Card{
+public abstract class SpecialCard extends Card{
 
     public SpecialCard(String value , String color){
         super(value , color);
@@ -18,6 +18,7 @@ public class SpecialCard extends Card{
             this.prize=11;
         else
             this.prize=12;
-
     }
+
+    public abstract void act(Game game);
 }

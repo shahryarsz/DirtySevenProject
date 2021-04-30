@@ -11,4 +11,8 @@ public class NormalCard extends Card {
             super.prize = Integer.parseInt(value);
     }
 
+    @Override
+    public void act(Game game) {
+        return;
+    }
 }

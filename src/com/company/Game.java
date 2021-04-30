@@ -11,8 +11,14 @@ public class Game {
     private Storage storage;
     private boolean clockwise;
     private boolean winner;
+    private boolean hasPrize;
+    private Card mainCard;
+    protected int turn;
+    protected String mainColor;
 
     public Game(ArrayList<Player> players1){
+        turn=0;
+        hasPrize=false;
         winner = true;
         clockwise = true;
         //adding players
@@ -70,8 +76,90 @@ public class Game {
         }
         //adding other carts to storage
         storage = new Storage();
-        storage.storeCards.addAll(cards);
+//        storage.storeCards.addAll(cards);
+        int size = cards.size();
+        for (int i = 0 ; i< size ; i++){
+            int index = random.nextInt(cards.size());
+            storage.storeCards.add(cards.get(index));
+            cards.remove(index);
+        }
+        for (Card card : storage.storeCards){
+            colorPrint(card.color, card.value);
+        }
+        //choosing first main cart
+        mainCard = storage.storeCards.get(0);
+        mainColor = mainCard.color;
+        storage.storeCards.remove(0);
     }
+
+//    public boolean isCanPlay() {
+//        return canPlay;
+//    }
+
+    public Storage getStorage() {
+        return this.storage;
+    }
+
+    public Player getNextPlayer(Player player){
+        int index=0;
+        for (Player p : players){
+            if (p.equals(player)){
+                return players.get(index+1)==null ? players.get(0) : players.get(index+1);
+            }
+            index++;
+        }
+        return null;
+    }
+
+    public void setCanPlay(Player player){
+        int index=0;
+        for (Player p : players){
+            if (p.equals(player)){
+                if (index==0){
+                    players.get(players.size()-1).canPlay=true;
+                }else {
+                    players.get(index - 1).canPlay = true;
+                }
+            }
+            index++;
+        }
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public void setTurn(int turn) {
+        this.turn = turn;
+    }
+
+    public boolean isHasPrize() {
+        return this.hasPrize;
+    }
+
+    public void setClockwise(boolean b) {
+        this.clockwise = b;
+    }
+
+    public boolean isClockwise() {
+        return clockwise;
+    }
+
+    public Card getMainCard(){
+        return this.mainCard;
+    }
+    public void setMainCard(Card card) {
+        this.mainCard = card;
+    }
+
+    public String getMainColor() {
+        return mainColor;
+    }
+
+    public void setMainColor(String mainColor) {
+        this.mainColor = mainColor;
+    }
+
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -89,10 +177,24 @@ public class Game {
             System.out.print(ANSI_BLUE + text + ANSI_RESET);
         else if (color.equals("red"))
             System.out.print(ANSI_RED + text + ANSI_RESET);
-        else
+        else if (color.equals("green"))
             System.out.print(ANSI_GREEN + text + ANSI_RESET);
+        else if (color.equals("cyan"))
+            System.out.print(ANSI_CYAN + text + ANSI_RESET);
+        else
+            System.out.println(ANSI_PURPLE + text + ANSI_RESET);
     }
 
+    public void scoreBoard(){
+        System.out.println("\nScore board:\n");
+        for (Player player : players){
+            colorPrint("purple" , player.name + " : " + player.playerScore());
+        }
+    }
+
+    public void setWinner(boolean b) {
+        this.winner = b;
+    }
     public boolean isWinner(){
         return winner;
     }
@@ -123,115 +225,188 @@ public class Game {
 //    }
 
     public void showMainCard(Card card){
-        System.out.print("main cart:");
+        System.out.print("main card:");
         colorPrint(card.color, card.value);
         System.out.println();
     }
 
     public boolean checkPlay(Card playCard , Card mainCard){
-        if (playCard.value.equals(mainCard.value) || playCard.color.equals(mainCard.color))
+        boolean checkBoss=false;
+        for (Player player : players){
+            if (player.isPlaying){
+                for (Card card : player.playerCards){
+                    if (card instanceof BossCard){
+                        checkBoss=true;
+                    }
+                }
+            }
+        }
+        if (playCard.value.equals(mainCard.value) || playCard.color.equals(mainColor) || checkBoss)
             return false;
         else
             return true;
+    }
+
+    public ArrayList<Player> getPlayers(){
+        return players;
+    }
+
+    public void setHasPrize(boolean hasPrize) {
+        this.hasPrize = hasPrize;
+    }
+
+    public void showStatus(){
+        int i=1;
+        for (Player player : players){
+            System.out.println(ANSI_CYAN+i+")"+ANSI_RESET+
+                    ANSI_PURPLE+player.name+" has "+player.playerCards.size()+" cards."+ANSI_RESET);
+            i++;
+        }
     }
 
 
     public void gameLoop(){
         Random random = new Random();
 
-        //choosing first main cart
-        Card mainCard = storage.storeCards.get(0);
-        storage.storeCards.remove(0);
-        Human myPlayer = (Human) players.get(0);
+//        Human myPlayer = (Human) players.get(0);
         Scanner scanner = new Scanner(System.in);
 
-        while (winner) {
-            //my player turn
-            while (true) {
-                System.out.println("\n\n" + myPlayer.name + "'s turn:\n\n");
-                showMainCard(mainCard);
-                System.out.println("\nyour cards:");
-                myPlayer.showCards();
-                if (myPlayer.cantPlay(mainCard)) {
-                    System.out.print("\nPress enter to grab a card from storage.");
-                    scanner.nextLine();
-                    myPlayer.grabStorage(storage);
-                    if (!(myPlayer.cantPlay(mainCard))) {                             //player can play
-                        continue;
-                    } else {                                                         //can't play anymore
-                        System.out.println("\nnow your cards are:\n");
-                        myPlayer.showCards();
-                        break;
-                    }
-                } else {
-                    System.out.print("\nplease choose a card:");
-                    int choice = scanner.nextInt();
-                    scanner.nextLine();
-                    if (checkPlay(myPlayer.chooseCard(choice), mainCard)) {
-                        System.out.println("\nWrong input\n");
-                    } else {
-                        storage.addStorage(mainCard);
-                        mainCard = myPlayer.chooseCard(choice);
-                        myPlayer.removeCard(mainCard);
-                        if (myPlayer.playerCards.isEmpty()){
-                            System.out.println("\n"+myPlayer.name +" wins!!");
-                            winner = false;
-                            return;
-                        }
-                        System.out.println("\nnow your cards are:\n");
-                        myPlayer.showCards();
-                        System.out.print("\nPress enter to continue");
-                        scanner.nextLine();
-                        break;
-                    }
+        while (winner){
+            while (clockwise){
+                if (turn==players.size()) {
+                    turn = 0;
                 }
+                showStatus();
+                Player player = players.get(turn);
+                setCanPlay(player);
+                player.isPlaying = true;
+                player.act(this);
+                turn++;
+                player.isPlaying=false;
             }
-            //bot turn
-            while (winner) {
-                for (Player player : players) {
-                    if (player instanceof Bot) {
-
-                        System.out.println("\n\n" + player.name + "'s turn:\n\n");
-                        showMainCard(mainCard);
-                        player.showCards();
-                        System.out.print("\nPress enter to see bot choice!");
-                        scanner.nextLine();
-                        Card botCard = ((Bot) player).botChoose(mainCard);
-                        if (botCard == null) {
-                            System.out.print("\nBot should grab a card from storage!Press enter to continue!");
-                            scanner.nextLine();
-                            player.grabStorage(storage);
-                            if (!(player.cantPlay(mainCard))) {                             //can play
-                                continue;
-                            } else {
-                                player.showCards();                                         //cant play
-                            }
-                        } else {
-                            storage.addStorage(mainCard);
-                            mainCard = botCard;
-                            player.removeCard(mainCard);
-                            if (player.playerCards.isEmpty()){
-                                System.out.println("\n"+player.name +" wins!!");
-                                winner = false;
-                                return;
-                            }
-                            showMainCard(mainCard);
-                            System.out.print("\nPress enter to continue");
-                            scanner.nextLine();
-                        }
-                    }
+            while (!clockwise) {
+                if (turn==-1) {
+                    turn = players.size()-1;
                 }
-                break;
+                showStatus();
+                Player player =players.get(turn);
+                setCanPlay(player);
+                player.isPlaying = true;
+                player.act(this);
+                turn--;
+                player.isPlaying = false;
             }
         }
 
 
 
-
-
-    }
-
-
-
+//        while (true) {
+//            for (Player player : players) {                                                    //giving turns to each player
+//                setCanPlay(player);
+//                //my player turn
+//                if (player instanceof Human && player.canPlay) {
+//                    player.isPlaying = true;
+//                    Human myPlayer = (Human) player;
+//                    while (winner) {
+//                        System.out.println("\n\n" + myPlayer.name + "'s turn:\n\n");
+//                        showMainCard(mainCard);
+//                        System.out.println("\nyour cards:");
+//                        myPlayer.showCards();
+//                        if (myPlayer.cantPlay(mainCard)) {
+//                            System.out.print("\nPress enter to grab a card from storage.");
+//                            scanner.nextLine();
+//                            myPlayer.grabStorage(storage);
+//                            if (!(myPlayer.cantPlay(mainCard))) {                             //player can play
+//                                continue;
+//                            } else {                                                         //can't play anymore
+//                                System.out.println("\nnow your cards are:\n");
+//                                myPlayer.showCards();
+//                                break;
+//                            }
+//                        } else {
+//                            System.out.print("\nplease choose a card:");
+//                            int choice = scanner.nextInt();
+//                            scanner.nextLine();
+//                            if (checkPlay(myPlayer.chooseCard(choice), mainCard)) {
+//                                System.out.println("\nWrong input\n");
+//                            } else {                                                        //PLAYING!!!!!!
+//                                storage.addStorage(mainCard);
+//                                mainCard = myPlayer.chooseCard(choice);
+//                                mainCard.act(this);                                   //CART ACTION EXPECTED
+//                                myPlayer.removeCard(mainCard);
+//                                if (myPlayer.playerCards.isEmpty()) {
+//                                    System.out.println("\n" + myPlayer.name + " wins!!");
+//                                    winner = false;
+//                                    return;
+//                                }
+//                                System.out.println("\nnow your cards are:\n");
+//                                myPlayer.showCards();
+//                                if (hasPrize) {
+//                                    System.out.println("\nYou can choose another card!\n");
+//                                    hasPrize = false;
+//                                    continue;
+//                                }
+//                                System.out.print("\nPress enter to continue");
+//                                scanner.nextLine();
+//                                player.isPlaying = false;
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
+//                //bot turn
+//                if (player instanceof Bot && player.canPlay) {
+//
+//                    while (winner) {
+//                        System.out.println("\n\n" + player.name + "'s turn:\n\n");
+//                        showMainCard(mainCard);
+//                        player.showCards();
+//                        System.out.print("\nPress enter to see bot choice!");
+//                        scanner.nextLine();
+//                        Card botCard = ((Bot) player).botChoose(mainCard);
+//                        if (botCard == null) {
+//                            System.out.print("\nBot should grab a card from storage!Press enter to continue!");
+//                            scanner.nextLine();
+//                            player.grabStorage(storage);
+//                            if (!(player.cantPlay(mainCard))) {                             //can play
+//                                continue;
+//                            } else {
+//                                player.showCards();                                         //cant play
+//                            }
+//                        } else {
+//                            storage.addStorage(mainCard);                                   //PLAYING
+//                            mainCard = botCard;
+//                            mainCard.act(this);                                      //CART ACTION EXPECTED
+//                            player.removeCard(mainCard);
+//                            if (player.playerCards.isEmpty()) {
+//                                System.out.println("\n" + player.name + " wins!!");
+//                                winner = false;
+//                                return;
+//                            }
+//                            showMainCard(mainCard);
+//                            if (hasPrize) {
+//                                System.out.println("\n" + player.name + " has another shot.\n");
+//                                hasPrize = false;
+//                                continue;
+//                            }
+//                            player.isPlaying = false;
+//                            System.out.print("\nPress enter to continue");
+//                            scanner.nextLine();
+//                            break;
+//                        }
+//                    }
+//                }
+//            }//end of foreach
+        }
 
 }
+
+
+
+
+
+
+
+
+
+

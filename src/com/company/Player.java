@@ -6,11 +6,17 @@ public abstract class Player {
 
     protected ArrayList<Card> playerCards;
     protected String name;
+    protected boolean canPlay;
+    protected boolean isPlaying;
 
     public Player(String name) {
         this.name = name;
         playerCards = new ArrayList<>();
+        canPlay=true;
+        isPlaying=false;
     }
+
+    public abstract void act(Game game);
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -33,8 +39,28 @@ public abstract class Player {
             return ANSI_GREEN + text + ANSI_RESET;
     }
 
+    public Card getCard(int index){
+        int i = 0;
+        for (Card card : playerCards){
+            if (i==index-1)
+                return card;
+            i++;
+        }
+        return null;
+    }
     public void removeCard(Card card){
         playerCards.remove(card);
+    }
+
+    public Card chooseCard(int index) {
+        int i = 0;
+        for (Card card : playerCards) {
+            if (i == index-1) {
+                return card;
+            }
+            i++;
+        }
+        return null;
     }
 
     public void showCards(){
@@ -49,9 +75,15 @@ public abstract class Player {
 //        }
     }
 
-    public boolean cantPlay(Card mainCard){
+    public boolean cantPlay(Card mainCard , String mainColor){
+        boolean checkBoss=false;
+        for (Card card : this.playerCards){
+            if (card instanceof BossCard){
+                checkBoss = true;
+            }
+        }
         for (Card card : playerCards){
-            if (card.value.equals(mainCard.value) || card.color.equals(mainCard.color))
+            if (card.value.equals(mainCard.value) || card.color.equals(mainColor) || checkBoss)
                 return false;
         }
         return true;
@@ -62,6 +94,14 @@ public abstract class Player {
         playerCards.add(storage.storeCards.get(0));
         //removing from storage
         storage.storeCards.remove(0);
+    }
+
+    public int playerScore(){
+        int score=0;
+        for (Card card : playerCards){
+            score += card.prize;
+        }
+        return score;
     }
 
 
