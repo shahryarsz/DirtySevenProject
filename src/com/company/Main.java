@@ -6,7 +6,7 @@ import java.util.Scanner;
 /**
  * main class of dirty seven project
  * @author shahryarsz
- * @version 1.0
+ * @version 1.1
  */
 public class Main {
     /**
@@ -100,6 +100,9 @@ public class Main {
             Game game = new Game(players);
             game.gameLoop();
             game.scoreBoard();
+            System.out.println("\nPress enter to continue\n");
+            scanner.nextLine();
+            System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         }
 
     }

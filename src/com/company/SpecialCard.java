@@ -4,11 +4,11 @@ package com.company;
  * class for special card
  * the cards with an special actions
  * @author shahryarsz
- * @version 1.0
+ * @version 1.1
  */
 public abstract class SpecialCard extends Card{
     /**
-     * special cards construcotr
+     * special cards constructor
      * @param value value of special card
      * @param color color of special card
      */

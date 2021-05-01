@@ -4,7 +4,7 @@ package com.company;
  * reverse card( number 10 )
  * when you play reverse card the game directions change in the opposite way
  * @author shahryarsz
- * @version 1.0
+ * @version 1.1
  */
 public class ReverseCard extends SpecialCard{
     /**
@@ -32,6 +32,7 @@ public class ReverseCard extends SpecialCard{
                 }
                 player.isPlaying = false;
                 game.setClockwise(!game.isClockwise());
+                game.setCanPlay(player);
                 return;
             }
             index++;

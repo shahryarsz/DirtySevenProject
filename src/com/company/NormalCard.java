@@ -4,7 +4,7 @@ package com.company;
  * class for normal cards
  * cards with no special action
  * @author shahryarsz
- * @version 1.0
+ * @version 1.1
  */
 public class NormalCard extends Card {
     /**

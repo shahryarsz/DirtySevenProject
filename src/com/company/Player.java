@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * class for creating a player
  * @author shahryarsz
- * @version 1.0
+ * @version 1.1
  */
 public abstract class Player {
     /**

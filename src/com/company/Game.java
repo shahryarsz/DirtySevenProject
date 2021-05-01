@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * game class for creating a game
  * @author shahryarsz
- * @version 1.0
+ * @version 1.1
  */
 public class Game {
     /**
@@ -134,10 +134,18 @@ public class Game {
         int index=0;
         for (Player p : players){
             if (p.name.equals(player.name)){
-                if (index==0){
-                    players.get(players.size()-1).canPlay=true;
+                if (clockwise){
+                    if (index==0){
+                        players.get(players.size()-1).canPlay=true;
+                    }else {
+                        players.get(index-1).canPlay = true;
+                    }
                 }else {
-                    players.get(index - 1).canPlay = true;
+                    if (index==players.size()-1){
+                        players.get(0).canPlay = true;
+                    }else {
+                        players.get(index+1).canPlay = true;
+                    }
                 }
                 return;
             }
@@ -195,7 +203,7 @@ public class Game {
 
     /**
      * setting main color
-     * @param mainColor
+     * @param mainColor the main color
      */
     public void setMainColor(String mainColor) {
         this.mainColor = mainColor;
@@ -232,7 +240,7 @@ public class Game {
      * showing score board
      */
     public void scoreBoard(){
-        System.out.println("\nScore board:\n");
+        System.out.println("\nScore board:");
         for (Player player : players){
             colorPrint("purple" , player.name + " : " + player.playerScore());
         }
@@ -272,20 +280,13 @@ public class Game {
      * @return if we can : false else : true
      */
     public boolean checkPlay(Card playCard , Card mainCard){
-        boolean checkBoss=false;
-        for (Player player : players){
-            if (player.isPlaying){
-                for (Card card : player.playerCards){
-                    if (card instanceof BossCard) {
-                        checkBoss = true;
-                    }
-                }
-            }
-        }
-        if (playCard.value.equals(mainCard.value) || playCard.color.equals(this.mainColor) || checkBoss)
+        if (playCard instanceof BossCard){
             return false;
-        else
-            return true;
+        }
+        if (playCard.value.equals(mainCard.value) || playCard.color.equals(this.mainColor)){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -326,9 +327,11 @@ public class Game {
             while (clockwise){
                 while (winner) {
                     if (turn == players.size()) { turn = 0; }
-                    showStatus();
                     Player player = players.get(turn);
                     setCanPlay(player);
+                    if (player.canPlay){
+                        showStatus();
+                    }
                     player.isPlaying = true;
                     turn++;
                     player.act(this);
@@ -342,9 +345,11 @@ public class Game {
             while (!clockwise) {
                 while (winner) {
                     if (turn == -1) { turn = players.size() - 1; }
-                    showStatus();
                     Player player = players.get(turn);
                     setCanPlay(player);
+                    if (player.canPlay){
+                        showStatus();
+                    }
                     player.isPlaying = true;
                     turn--;
                     player.act(this);

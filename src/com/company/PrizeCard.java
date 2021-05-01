@@ -4,7 +4,7 @@ package com.company;
  * class for prize card ( number 8 )
  * if you playe a prize card you can play one more time
  * @author shahryarsz
- * @version 1.0
+ * @version 1.1
  */
 public class PrizeCard extends SpecialCard{
     /**

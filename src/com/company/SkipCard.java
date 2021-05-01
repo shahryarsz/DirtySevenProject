@@ -3,7 +3,7 @@ package com.company;
 /**
  * skip card ( A ) is for skip from next player
  * @author shahryarsz
- * @version 1.0
+ * @version 1.1
  */
 public class SkipCard extends SpecialCard {
     /**
@@ -24,13 +24,24 @@ public class SkipCard extends SpecialCard {
         int index=0;
         for (Player player : game.getPlayers()){
             if (player.isPlaying){
-                if (index==game.getPlayers().size()-1) {
-                    index = 0;
+                if (game.isClockwise()){
+                    if (index==game.getPlayers().size()-1) {
+                        index = 0;
+                    }else {
+                        index++;
+                    }
+                    game.getPlayers().get(index).canPlay=false;
+                    return;
                 }else {
-                    index++;
+                    if (index==0){
+                        index=game.getPlayers().size()-1;
+                    }else {
+                        index--;
+                    }
+                    game.getPlayers().get(index).canPlay=false;
+                    return;
                 }
-                game.getPlayers().get(index).canPlay=false;
-                return;
+
             }
             index++;
         }

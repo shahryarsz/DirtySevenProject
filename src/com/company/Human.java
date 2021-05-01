@@ -5,7 +5,7 @@ import java.util.Scanner;
 /**
  * class for human players
  * @author shahryarsz
- * @version 1.0
+ * @version 1.1
  */
 public class Human extends Player {
     /**
@@ -41,6 +41,7 @@ public class Human extends Player {
                             player.showCards();
                             System.out.print(colorString("white" , "\nPress enter to continue"));
                             scanner.nextLine();
+                            player.isPlaying = false;
                             break;
                         }
                     }else {

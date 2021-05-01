@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * class for holding storage
  * @author shahryarsz
- * @version 1.0
+ * @version 1.1
  */
 public class Storage {
     /**

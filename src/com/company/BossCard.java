@@ -8,7 +8,7 @@ import java.util.Scanner;
  * you can play boss card on all cards
  * after boss card you should set a main color for next cards
  * @author shahryarsz
- * @version 1.0
+ * @version 1.1
  */
 public class BossCard extends SpecialCard{
     /**
@@ -39,7 +39,7 @@ public class BossCard extends SpecialCard{
                         } else {
                             System.out.println(colorString("red" , "\nyou should choose between : green , blue , black and red!\n"));
                         }
-                    }else {
+                    }else if (player instanceof Bot){
                         Random random = new Random();
                         String color1="";
                         int x = random.nextInt(4);
@@ -57,7 +57,7 @@ public class BossCard extends SpecialCard{
                                 color1 = "blue";
                                 break;
                         }
-                        System.out.println(colorString("purple" , "\nyou should choose between : green , blue , black and red!\n"));
+                        System.out.println(colorString("purple" , "\nBot choose "+color1+" as new main color"));
                         game.setMainColor(color1);
                         return;
                     }

@@ -7,7 +7,7 @@ import java.util.Scanner;
  * class for the giveCard cards ( number 2 )
  * if you play a give card you should give one of your cards to another player
  * @author shahryarsz
- * @version 1.0
+ * @version 1.1
  */
 public class GiveCard extends SpecialCard{
     /**
@@ -30,26 +30,39 @@ public class GiveCard extends SpecialCard{
             for (Player player : game.getPlayers()) {
                 if (player.isPlaying) {
                     if (player instanceof Human) {
-                        System.out.print(colorString("cyan" , "\nchoose a card :"));
-                        int choice = scanner.nextInt();
-                        scanner.nextLine();
-                        if (choice <= 0 || choice > player.playerCards.size()) {
-                            System.out.println(colorString("red" , "\nWrong input\n"));
-                        } else {
-                            Card givingCard = player.getCard(choice);
-                            System.out.print(colorString("cyan" , "\nwhich player do you want to give your card?(type the name)"));
-                            String name = scanner.nextLine();
-                            for (Player p : game.getPlayers()) {
-                                if (p.name.equals(name)) {
-                                    p.playerCards.add(givingCard);
-                                    player.removeCard(givingCard);
-                                    return;
+                        while (true){
+                            System.out.print(colorString("cyan" , "\nchoose a card :"));
+                            int choice = scanner.nextInt();
+                            scanner.nextLine();
+                            if (choice <= 0 || choice > player.playerCards.size()) {
+                                System.out.println(colorString("red" , "\nWrong input\n"));
+                            } else {
+                                Card givingCard = player.getCard(choice);
+                                System.out.print(colorString("cyan", "\nwhich player do you want to give your card?(type the name)"));
+                                String name = scanner.nextLine();
+                                for (Player p : game.getPlayers()) {
+                                    if (p.name.equals(name)) {
+                                        if (p.name.equals(player.name)) {
+                                            System.out.println(colorString("red", "\nWrong input!\n"));
+                                            continue;
+                                        }
+                                        p.playerCards.add(givingCard);
+                                        player.removeCard(givingCard);
+                                        return;
+                                    }
+
                                 }
+                                System.out.println(colorString("red", "\nPlayer not found. try again!\n"));
                             }
-                            System.out.println(colorString("cyan" , "\nPlayer not found. try again!\n"));
                         }
                     }else if (player instanceof Bot){
                         Random random = new Random();
+                        player.removeCard(this);
+                        if (player.playerCards.isEmpty()){
+                            System.out.println(colorString("yellow" , "\n" + player.name + " wins!!"));
+                            game.setWinner(false);
+                            return;
+                        }
                         int botChoiceCard = random.nextInt(player.playerCards.size())+1;
                         Card botGivingCard = player.getCard(botChoiceCard);
                         int maxSize=52;

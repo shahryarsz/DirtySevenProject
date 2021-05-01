@@ -5,7 +5,7 @@ import java.util.Scanner;
 /**
  * Bot class for bot players
  * @author shahryarsz
- * @version 1.0
+ * @version 1.1
  */
 public class Bot extends Player{
     /**
@@ -24,12 +24,18 @@ public class Bot extends Player{
      */
     public Card botChoose(Card mainCard , String mainColor){
         for (Card card : playerCards){
-            if (card.value.equals(mainCard.value) || card.color.equals(mainColor)){
-                return card;
-            }else if (card instanceof BossCard){
+            if (mainCard.color.equals(mainColor)){
+                if (card.value.equals(mainCard.value) || card.color.equals(mainColor)){
+                    return card;
+                }else if (card instanceof BossCard){
                     return card;
                 }
+            }else if (card.color.equals(mainColor)){
+                    return card;
+                }else if (card instanceof BossCard){
+                return card;
             }
+        }
         return null;
     }
 
@@ -58,9 +64,20 @@ public class Bot extends Player{
                                 continue;
                             } else {
                                 player.showCards();
+                                player.isPlaying = false;
                                 break;                                                                      //cant play
                             }
                         } else {
+                            int botchoice=0;
+                            for (Card card : playerCards){
+                                if (card.value.equals(botCard.value) && card.color.equals(botCard.color)){
+                                    break;
+                                }
+                                botchoice++;
+                            }
+                            if (player.hasPunish && !(player.playerCards.get(botchoice).value.equals("7"))){
+                                continue;
+                            }
                             game.getStorage().addStorage(game.getMainCard());                                   //PLAYING
                             game.setMainCard(botCard);
                             if (game.getMainCard().value.equals(game.lastCard.value) && game.getMainCard().color.equals(game.lastCard.color)){
@@ -81,7 +98,6 @@ public class Bot extends Player{
                                 continue;
                             }
                             player.isPlaying = false;
-                            System.out.print(colorString("white" , "\n" + player.name + " has another shot.\n"));
                             scanner.nextLine();
                             break;
                         }
