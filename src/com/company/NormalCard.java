@@ -1,6 +1,17 @@
 package com.company;
 
+/**
+ * class for normal cards
+ * cards with no special action
+ * @author shahryarsz
+ * @version 1.0
+ */
 public class NormalCard extends Card {
+    /**
+     * constructor for normal cards
+     * @param value value of a normal card
+     * @param color color of normal card
+     */
     public NormalCard(String value , String color){
         super(value , color);
         if (value.equals("C"))
@@ -11,6 +22,10 @@ public class NormalCard extends Card {
             super.prize = Integer.parseInt(value);
     }
 
+    /**
+     * overriding act method for normal cards in a game
+     * @param game the game
+     */
     @Override
     public void act(Game game) {
         return;

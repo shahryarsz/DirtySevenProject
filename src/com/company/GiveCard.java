@@ -3,12 +3,26 @@ package com.company;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * class for the giveCard cards ( number 2 )
+ * if you play a give card you should give one of your cards to another player
+ * @author shahryarsz
+ * @version 1.0
+ */
 public class GiveCard extends SpecialCard{
-
+    /**
+     * constructor for a give Card
+     * @param value value of give card
+     * @param color color of give card
+     */
     public GiveCard(String value, String color) {
         super(value, color);
     }
 
+    /**
+     * overriding act method for give cards in a game
+     * @param game the game
+     */
     @Override
     public void act(Game game) {
         Scanner scanner = new Scanner(System.in);
@@ -60,6 +74,4 @@ public class GiveCard extends SpecialCard{
             break;
         }
     }
-
-
 }

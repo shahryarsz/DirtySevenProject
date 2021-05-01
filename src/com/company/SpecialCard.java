@@ -1,7 +1,17 @@
 package com.company;
 
+/**
+ * class for special card
+ * the cards with an special actions
+ * @author shahryarsz
+ * @version 1.0
+ */
 public abstract class SpecialCard extends Card{
-
+    /**
+     * special cards construcotr
+     * @param value value of special card
+     * @param color color of special card
+     */
     public SpecialCard(String value , String color){
         super(value , color);
         if (this instanceof SevenPunishCard){
@@ -21,5 +31,9 @@ public abstract class SpecialCard extends Card{
             this.prize=12;
     }
 
+    /**
+     * overriding act method for special cards in a game
+     * @param game the game
+     */
     public abstract void act(Game game);
 }

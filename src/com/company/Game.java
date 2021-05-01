@@ -2,10 +2,16 @@ package com.company;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
+/**
+ * game class for creating a game
+ * @author shahryarsz
+ * @version 1.0
+ */
 public class Game {
-
+    /**
+     * fields of the game
+     */
     private ArrayList<Player> players;
     private ArrayList<Card> cards;
     private Storage storage;
@@ -18,6 +24,10 @@ public class Game {
     protected int punish;
     protected Card lastCard;
 
+    /**
+     * constructor for creating a game with players
+     * @param players1 players array list
+     */
     public Game(ArrayList<Player> players1){
         punish=2;
         turn=0;
@@ -74,7 +84,6 @@ public class Game {
         }
         //adding other cards to storage
         storage = new Storage();
-//        storage.storeCards.addAll(cards);
         int size = cards.size();
         for (int i = 0 ; i< size ; i++){
             int index = random.nextInt(cards.size());
@@ -84,7 +93,6 @@ public class Game {
         //saving last card
         lastCard = storage.storeCards.get(storage.storeCards.size()-1);
         //choosing first main card
-
         if (storage.storeCards.get(0) instanceof SpecialCard){
             storage.storeCards.add(storage.storeCards.get(0));
             storage.storeCards.remove(0);
@@ -92,9 +100,12 @@ public class Game {
         mainCard = storage.storeCards.get(0);
         mainColor = mainCard.color;
         storage.storeCards.remove(0);
-
     }
 
+    /**
+     * updating storage cards
+     * @param storage the storage
+     */
     public void updateStorage(Storage storage){
         Random random = new Random();
         ArrayList<Card> tmp = new ArrayList<>();
@@ -107,10 +118,18 @@ public class Game {
         storage.storeCards.addAll(tmp);
     }
 
+    /**
+     * getting the storage
+     * @return storage
+     */
     public Storage getStorage() {
         return this.storage;
     }
 
+    /**
+     * letting previous player to play
+     * @param player current player
+     */
     public void setCanPlay(Player player){
         int index=0;
         for (Player p : players){
@@ -126,34 +145,65 @@ public class Game {
         }
     }
 
+    /**
+     * setting turn
+     * @param turn
+     */
     public void setTurn(int turn) {
         this.turn = turn;
     }
 
+    /**
+     * getting hasPrize
+     * @return if has prize:true else: false
+     */
     public boolean isHasPrize() {
         return this.hasPrize;
     }
 
+    /**
+     * setting direction
+     * @param b
+     */
     public void setClockwise(boolean b) {
         this.clockwise = b;
     }
 
+    /**
+     * getting direction
+     * @return the direction
+     */
     public boolean isClockwise() {
         return clockwise;
     }
 
+    /**
+     * getting main card
+     * @return main card
+     */
     public Card getMainCard(){
         return this.mainCard;
     }
 
+    /**
+     * setting a card as main card
+     * @param card the card
+     */
     public void setMainCard(Card card) {
         this.mainCard = card;
     }
 
+    /**
+     * setting main color
+     * @param mainColor
+     */
     public void setMainColor(String mainColor) {
         this.mainColor = mainColor;
     }
 
+    /**
+     * colors code
+     */
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -162,6 +212,11 @@ public class Game {
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
 
+    /**
+     *printing with colors
+     * @param color specific color
+     * @param text printing text
+     */
     public void colorPrint(String color , String text){
         switch (color) {
             case "black" -> System.out.print(ANSI_BLACK + text + ANSI_RESET);
@@ -173,6 +228,9 @@ public class Game {
         }
     }
 
+    /**
+     * showing score board
+     */
     public void scoreBoard(){
         System.out.println("\nScore board:\n");
         for (Player player : players){
@@ -180,10 +238,18 @@ public class Game {
         }
     }
 
+    /**
+     * setting the winner
+     * @param b
+     */
     public void setWinner(boolean b) {
         this.winner = b;
     }
 
+    /**
+     * showing the main card
+     * @param card the main card
+     */
     public void showMainCard(Card card){
         System.out.println("main card:");
         colorPrint(card.color , "┍━━━━━┑");
@@ -199,6 +265,12 @@ public class Game {
         System.out.println("main color is:"+mainColor);
     }
 
+    /**
+     * check if we can play or not
+     * @param playCard our card
+     * @param mainCard main card
+     * @return if we can : false else : true
+     */
     public boolean checkPlay(Card playCard , Card mainCard){
         boolean checkBoss=false;
         for (Player player : players){
@@ -206,22 +278,35 @@ public class Game {
                 for (Card card : player.playerCards){
                     if (card instanceof BossCard) {
                         checkBoss = true;
-                        break;
                     }
                 }
             }
         }
-        return !playCard.value.equals(mainCard.value) && !playCard.color.equals(mainColor) && !checkBoss;
+        if (playCard.value.equals(mainCard.value) || playCard.color.equals(this.mainColor) || checkBoss)
+            return false;
+        else
+            return true;
     }
 
+    /**
+     * getting players list
+     * @return
+     */
     public ArrayList<Player> getPlayers(){
         return players;
     }
 
+    /**
+     * set hasprize for players turn
+     * @param hasPrize
+     */
     public void setHasPrize(boolean hasPrize) {
         this.hasPrize = hasPrize;
     }
 
+    /**
+     * showing status
+     */
     public void showStatus(){
         int i=1;
         System.out.println();
@@ -233,6 +318,9 @@ public class Game {
         System.out.println();
     }
 
+    /**
+     * method for generating the game
+     */
     public void gameLoop(){
         while (true){
             while (clockwise){

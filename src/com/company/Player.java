@@ -2,14 +2,25 @@ package com.company;
 
 import java.util.ArrayList;
 
+/**
+ * class for creating a player
+ * @author shahryarsz
+ * @version 1.0
+ */
 public abstract class Player {
-
+    /**
+     * player fields
+     */
     protected ArrayList<Card> playerCards;
     protected String name;
     protected boolean canPlay;
     protected boolean isPlaying;
     protected boolean hasPunish;
 
+    /**
+     * constructor for player
+     * @param name name of the player
+     */
     public Player(String name) {
         this.name = name;
         playerCards = new ArrayList<>();
@@ -18,8 +29,15 @@ public abstract class Player {
         hasPunish=false;
     }
 
+    /**
+     * overriding act method for players actions in a game
+     * @param game the game
+     */
     public abstract void act(Game game);
 
+    /**
+     * color codes
+     */
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -30,6 +48,12 @@ public abstract class Player {
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
+    /**
+     * color a text
+     * @param color the color
+     * @param text the text
+     * @return color text
+     */
     public String colorString(String color , String text){
         if (color.equals("black"))
             return ANSI_BLACK + text + ANSI_RESET;
@@ -49,6 +73,11 @@ public abstract class Player {
             return ANSI_WHITE + text + ANSI_RESET;
     }
 
+    /**
+     * getting a card by its index
+     * @param index the index
+     * @return the card
+     */
     public Card getCard(int index){
         int i = 0;
         for (Card card : playerCards){
@@ -58,10 +87,20 @@ public abstract class Player {
         }
         return null;
     }
+
+    /**
+     * removing a card from player cards lists
+     * @param card the card
+     */
     public void removeCard(Card card){
         playerCards.remove(card);
     }
 
+    /**
+     * choosing a card from player cards list
+     * @param index cards index
+     * @return card
+     */
     public Card chooseCard(int index) {
         int i = 0;
         for (Card card : playerCards) {
@@ -73,9 +112,12 @@ public abstract class Player {
         return null;
     }
 
-
-
-
+    /**
+     * check if we can play or not
+     * @param mainCard game's main card
+     * @param mainColor game's main color
+     * @return if we can play : false else : true
+     */
     public boolean cantPlay(Card mainCard , String mainColor){
         if (!hasPunish) {
             boolean checkBoss = false;
@@ -98,6 +140,10 @@ public abstract class Player {
         return true;
     }
 
+    /**
+     * grabbing a card from storage
+     * @param storage the storage
+     */
     public void grabStorage(Storage storage){
         //adding to the cards
         playerCards.add(storage.storeCards.get(0));
@@ -105,6 +151,10 @@ public abstract class Player {
         storage.storeCards.remove(0);
     }
 
+    /**
+     * showing player score
+     * @return player score
+     */
     public int playerScore(){
         int score=0;
         for (Card card : playerCards){
@@ -113,6 +163,9 @@ public abstract class Player {
         return score;
     }
 
+    /**
+     * showing cards of a player
+     */
     public void showCards(){
         if (this instanceof Bot){
             System.out.println(colorString("yellow" , this.name+" has "+this.playerCards.size()+" cards"));
@@ -173,5 +226,4 @@ public abstract class Player {
             System.out.print(colorString("yellow" , "   "+i+"  "));
         }
     }
-
 }

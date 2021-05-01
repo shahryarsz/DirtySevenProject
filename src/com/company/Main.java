@@ -3,16 +3,24 @@ package com.company;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * main class of dirty seven project
+ * @author shahryarsz
+ * @version 1.0
+ */
 public class Main {
-
+    /**
+     * main method
+     * @param args
+     */
     public static void main(String[] args) {
         ArrayList<Player> players = new ArrayList<>();
         while (true) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("\nWelcome to yegain's dirty seven game:)\n\n");
-            System.out.println("Select game mode:\n1.Multiplayer\n2.Play with Bots");
+            System.out.println("Select game mode:\n1.Multiplayer\n2.Play with Bots\n3.Exit");
             int modeChoice = scanner.nextInt();
-            if (modeChoice<=0 || modeChoice>2){
+            if (modeChoice<=0 || modeChoice>3){
                 System.out.println("\nWrong input\n");
                 continue;
             }
@@ -49,7 +57,7 @@ public class Main {
                         }
                         break;
                 }
-            }else {
+            }else if (modeChoice==1){
                 System.out.print("How many players?");
                 int choice = scanner.nextInt();
                 if (choice > 5 || choice < 3) {
@@ -86,12 +94,12 @@ public class Main {
                         }
                         break;
                 }
+            }else {
+                return;
             }
             Game game = new Game(players);
             game.gameLoop();
             game.scoreBoard();
-
-
         }
 
     }

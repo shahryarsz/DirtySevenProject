@@ -2,12 +2,26 @@ package com.company;
 
 import java.util.Scanner;
 
+/**
+ * Bot class for bot players
+ * @author shahryarsz
+ * @version 1.0
+ */
 public class Bot extends Player{
-
+    /**
+     * constructor for setting the name
+     * @param name the name
+     */
     public Bot(String name){
         super(name);
     }
 
+    /**
+     * method for selecting a card for bot
+     * @param mainCard main card of the game
+     * @param mainColor main color of the game
+     * @return bot choice
+     */
     public Card botChoose(Card mainCard , String mainColor){
         for (Card card : playerCards){
             if (card.value.equals(mainCard.value) || card.color.equals(mainColor)){
@@ -19,8 +33,10 @@ public class Bot extends Player{
         return null;
     }
 
-
-
+    /**
+     * overriding act method for bots in a game
+     * @param game the game
+     */
     @Override
     public void act(Game game) {
         Scanner scanner = new Scanner(System.in);
@@ -74,6 +90,4 @@ public class Bot extends Player{
             }
         }
     }
-
-
 }

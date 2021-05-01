@@ -2,13 +2,24 @@ package com.company;
 
 import java.util.Scanner;
 
+/**
+ * class for human players
+ * @author shahryarsz
+ * @version 1.0
+ */
 public class Human extends Player {
-
+    /**
+     * constructor for creating a human
+     * @param name human's name
+     */
     public Human(String name) {
         super(name);
     }
 
-
+    /**
+     * overriding act method for human's action in a game
+     * @param game the game
+     */
     @Override
     public void act(Game game) {
         Scanner scanner = new Scanner(System.in);
@@ -19,7 +30,7 @@ public class Human extends Player {
                     game.showMainCard(game.getMainCard());
                     System.out.println(colorString("cyan" , "\nYour cards:\n"));
                     player.showCards();
-                    if (player.cantPlay(game.getMainCard() , game.mainColor)) {
+                    if ((player.cantPlay(game.getMainCard() , game.mainColor))) {
                         System.out.print(colorString("purple" , "\nPress enter to grab a card from storage."));
                         scanner.nextLine();
                         player.grabStorage(game.getStorage());

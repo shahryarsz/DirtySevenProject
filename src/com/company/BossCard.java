@@ -3,12 +3,27 @@ package com.company;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * class of Boss card
+ * you can play boss card on all cards
+ * after boss card you should set a main color for next cards
+ * @author shahryarsz
+ * @version 1.0
+ */
 public class BossCard extends SpecialCard{
-
+    /**
+     * simple constructor
+     * @param value cards value
+     * @param color cards color
+     */
     public BossCard(String value, String color) {
         super(value, color);
     }
 
+    /**
+     * overriding cards act in a game
+     * @param game the game
+     */
     @Override
     public void act(Game game) {
         while (true) {
@@ -48,9 +63,6 @@ public class BossCard extends SpecialCard{
                     }
                 }
             }
-
         }
     }
-
-
 }
